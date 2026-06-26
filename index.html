@@ -15,7 +15,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
   <script src="./vocab-data.js"></script>
   <style>
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    /* Ekrandan chiqib ketish muammosini (horizontal scroll) butunlay yo'qotish */
+    html, body { 
+      max-width: 100%; 
+      overflow-x: hidden; 
+      position: relative;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    *, ::before, ::after { box-sizing: inherit; }
+    
     body {
       font-family: Inter, system-ui, sans-serif;
       letter-spacing: -0.01em;
@@ -24,12 +33,11 @@
     .icon { font-family: "Material Symbols Rounded"; font-weight: 400; font-style: normal; line-height: 1; }
     .soft-shadow { box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 8px 24px rgba(0,0,0,0.02); }
     
-    /* Mobil qurilmalarda darajalar ro'yxati chiroyli aylanishi uchun horizontal scroll */
+    /* Faqat darajalar paneli yon tomonga aylanishi uchun */
     .scroll-hide::-webkit-scrollbar { display: none; }
     .scroll-hide { -ms-overflow-style: none; scrollbar-width: none; }
     
     .level-chip { transition: all 0.15s ease; min-width: 44px; min-height: 44px; }
-    .tab { transition: all 0.15s; }
     
     .flip-card { perspective: 1200px; }
     .flip-inner { transform-style: preserve-3d; transition: transform .5s cubic-bezier(.2,.7,.2,1); }
@@ -42,11 +50,11 @@
   </style>
 </head>
 <body class="min-h-screen bg-[#fafafa] text-[#0f172a] dark:bg-slate-900 dark:text-slate-300 pb-8">
-  <header class="sticky top-0 z-40 bg-white border-b border-slate-200 dark:bg-slate-800 dark:border-slate-700 shadow-sm">
+  <header class="sticky top-0 z-40 bg-white border-b border-slate-200 dark:bg-slate-800 dark:border-slate-700 shadow-sm w-full">
     <div class="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
       <div class="flex items-center justify-between w-full lg:w-auto gap-3">
         <div class="flex items-center gap-2.5">
-          <div class="grid h-9 w-9 place-items-center rounded-md bg-slate-950 text-white dark:bg-slate-700">
+          <div class="grid h-9 w-9 place-items-center rounded-md bg-slate-950 text-white dark:bg-slate-700 flex-shrink-0">
             <span class="icon text-[20px]">school</span>
           </div>
           <div>
@@ -59,18 +67,19 @@
         </button>
       </div>
       
-      <div class="grid grid-cols-3 gap-2 w-full lg:min-w-[500px]">
-        <div class="rounded-lg border border-slate-200 bg-white p-2 text-center lg:text-left dark:bg-slate-800 dark:border-slate-700">
-          <p class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Progress</p>
-          <p id="totalProgressText" class="mt-0.5 text-xs font-bold text-slate-800 dark:text-white">0 / 2000</p>
+      <!-- Progress paneli - Har qanday ekranda siqilmaydigan grid -->
+      <div class="grid grid-cols-3 gap-2 w-full lg:w-auto lg:min-w-[450px]">
+        <div class="rounded-lg border border-slate-200 bg-white p-2 text-center dark:bg-slate-800 dark:border-slate-700 min-w-0">
+          <p class="text-[9px] font-bold uppercase tracking-wider text-slate-400 truncate">Progress</p>
+          <p id="totalProgressText" class="mt-0.5 text-xs font-bold text-slate-800 dark:text-white truncate">0 / 2000</p>
         </div>
-        <div class="rounded-lg border border-slate-200 bg-white p-2 text-center lg:text-left dark:bg-slate-800 dark:border-slate-700">
-          <p class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Level</p>
-          <p id="activeLevelText" class="mt-0.5 text-xs font-bold text-slate-800 dark:text-white">Level 1</p>
+        <div class="rounded-lg border border-slate-200 bg-white p-2 text-center dark:bg-slate-800 dark:border-slate-700 min-w-0">
+          <p class="text-[9px] font-bold uppercase tracking-wider text-slate-400 truncate">Level</p>
+          <p id="activeLevelText" class="mt-0.5 text-xs font-bold text-slate-800 dark:text-white truncate">Level 1</p>
         </div>
-        <div class="rounded-lg border border-slate-200 bg-white p-2 text-center lg:text-left dark:bg-slate-800 dark:border-slate-700">
-          <p class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Maqsad</p>
-          <p id="todayGoalText" class="mt-0.5 text-xs font-bold text-slate-800 dark:text-white">15 so'z</p>
+        <div class="rounded-lg border border-slate-200 bg-white p-2 text-center dark:bg-slate-800 dark:border-slate-700 min-w-0">
+          <p class="text-[9px] font-bold uppercase tracking-wider text-slate-400 truncate">Maqsad</p>
+          <p id="todayGoalText" class="mt-0.5 text-xs font-bold text-slate-800 dark:text-white truncate">15 so'z</p>
         </div>
       </div>
     </div>
@@ -81,8 +90,9 @@
     </div>
   </header>
 
-  <main class="mx-auto max-w-7xl px-3 py-4 space-y-4">
-    <section class="overflow-hidden rounded-xl p-4 soft-shadow bg-white border border-slate-200 dark:bg-slate-800 dark:border-slate-700">
+  <main class="mx-auto max-w-7xl px-3 py-4 space-y-4 w-full overflow-hidden">
+    <!-- Banner -->
+    <section class="overflow-hidden rounded-xl p-4 soft-shadow bg-white border border-slate-200 dark:bg-slate-800 dark:border-slate-700 w-full">
       <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">IELTS Sprint</p>
@@ -96,19 +106,23 @@
       </div>
     </section>
 
-    <section class="grid gap-4 lg:grid-cols-[260px_1fr]">
-      <aside class="space-y-3">
-        <div class="rounded-xl border border-slate-200 bg-white p-3 soft-shadow dark:bg-slate-800 dark:border-slate-700">
+    <!-- Asosiy bloklar -->
+    <section class="grid gap-4 lg:grid-cols-[260px_1fr] w-full items-start">
+      <aside class="space-y-3 w-full overflow-hidden">
+        <!-- Level Tanlash -->
+        <div class="rounded-xl border border-slate-200 bg-white p-3 soft-shadow dark:bg-slate-800 dark:border-slate-700 w-full overflow-hidden">
           <div class="mb-2 flex items-center justify-between">
             <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">Level tanlash</h2>
             <button class="rounded-md p-1 hover:bg-slate-100 text-slate-400 dark:hover:bg-slate-700 min-h-0" onclick="resetProgress()" title="Progressni tozalash">
               <span class="icon text-lg">restart_alt</span>
             </button>
           </div>
-          <div id="levelGrid" class="flex gap-2 overflow-x-auto pb-2 pt-1 scroll-hide sm:grid sm:grid-cols-5 sm:gap-1.5 sm:overflow-x-visible sm:pb-0"></div>
+          <!-- Faqat shu konteyner x-scroll bo'ladi, butun sahifa emas -->
+          <div id="levelGrid" class="flex gap-2 overflow-x-auto pb-2 pt-1 scroll-hide sm:grid sm:grid-cols-5 sm:gap-1.5 sm:overflow-x-visible sm:pb-0 w-full"></div>
           <p class="text-[10px] text-slate-400 text-center mt-1 sm:hidden">👉 Yon tomonga suring</p>
         </div>
         
+        <!-- Statistika -->
         <div class="rounded-xl border border-slate-200 bg-white p-3 dark:bg-slate-800 dark:border-slate-700 hidden sm:block">
           <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">Statistika</h2>
           <div class="mt-2 space-y-1.5 text-xs">
@@ -119,12 +133,14 @@
         </div>
       </aside>
 
-      <section class="space-y-4">
-        <div class="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-2 soft-shadow md:flex-row md:items-center md:justify-between dark:bg-slate-800 dark:border-slate-700">
+      <!-- Kontent -->
+      <section class="space-y-4 w-full overflow-hidden">
+        <!-- Tablar va Filtrlar -->
+        <div class="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-2 soft-shadow md:flex-row md:items-center md:justify-between dark:bg-slate-800 dark:border-slate-700 w-full">
           <div class="grid grid-cols-3 gap-1 rounded-lg bg-slate-100 p-1 dark:bg-slate-900 w-full md:w-auto">
-            <button id="tab-list" class="tab rounded-md py-2 text-xs font-bold text-slate-500 dark:text-slate-400 data-[active=true]:bg-white data-[active=true]:text-slate-900 dark:data-[active=true]:bg-slate-800 dark:data-[active=true]:text-sky-400 data-[active=true]:shadow-sm" onclick="switchMode('list')">Ro'yxat</button>
-            <button id="tab-flash" class="tab rounded-md py-2 text-xs font-bold text-slate-500 dark:text-slate-400 data-[active=true]:bg-white data-[active=true]:text-slate-900 dark:data-[active=true]:bg-slate-800 dark:data-[active=true]:text-sky-400 data-[active=true]:shadow-sm" onclick="switchMode('flash')">Flashcard</button>
-            <button id="tab-quiz" class="tab rounded-md py-2 text-xs font-bold text-slate-500 dark:text-slate-400 data-[active=true]:bg-white data-[active=true]:text-slate-900 dark:data-[active=true]:bg-slate-800 dark:data-[active=true]:text-sky-400 data-[active=true]:shadow-sm" onclick="switchMode('quiz')">Test</button>
+            <button id="tab-list" class="rounded-md py-2 text-xs font-bold text-slate-500 dark:text-slate-400 data-[active=true]:bg-white data-[active=true]:text-slate-900 dark:data-[active=true]:bg-slate-800 dark:data-[active=true]:text-sky-400 data-[active=true]:shadow-sm" onclick="switchMode('list')">Ro'yxat</button>
+            <button id="tab-flash" class="rounded-md py-2 text-xs font-bold text-slate-500 dark:text-slate-400 data-[active=true]:bg-white data-[active=true]:text-slate-900 dark:data-[active=true]:bg-slate-800 dark:data-[active=true]:text-sky-400 data-[active=true]:shadow-sm" onclick="switchMode('flash')">Flashcard</button>
+            <button id="tab-quiz" class="rounded-md py-2 text-xs font-bold text-slate-500 dark:text-slate-400 data-[active=true]:bg-white data-[active=true]:text-slate-900 dark:data-[active=true]:bg-slate-800 dark:data-[active=true]:text-sky-400 data-[active=true]:shadow-sm" onclick="switchMode('quiz')">Test</button>
           </div>
           <div id="listFilters" class="flex flex-col gap-2 w-full md:w-auto sm:flex-row">
             <input id="searchInput" class="w-full rounded-lg border border-slate-200 px-3 py-1.5 text-sm outline-none focus:border-slate-900 dark:bg-slate-900 dark:border-slate-700 dark:text-white dark:focus:border-sky-400" placeholder="Qidirish..." oninput="renderWords()" />
@@ -134,19 +150,17 @@
           </div>
         </div>
 
-        <section id="view-list" class="rounded-xl border border-slate-200 bg-white p-4 soft-shadow dark:bg-slate-800 dark:border-slate-700">
+        <!-- RO'YXAT -->
+        <section id="view-list" class="rounded-xl border border-slate-200 bg-white p-4 soft-shadow dark:bg-slate-800 dark:border-slate-700 w-full">
           <div class="mb-3 flex flex-col gap-2 border-b border-slate-100 pb-3 sm:flex-row sm:items-end sm:justify-between dark:border-slate-700">
-            <div>
-              <h2 id="listTitle" class="text-base font-bold text-slate-900 dark:text-white">Level 1 so'zlari</h2>
-            </div>
-            <button onclick="markLevelDone()" class="w-full sm:w-auto rounded-lg bg-slate-900 px-4 py-2 text-xs font-medium text-white hover:bg-slate-800 dark:bg-sky-500 dark:text-slate-900 dark:hover:bg-sky-600">
-              Levelni yakunlash
-            </button>
+            <h2 id="listTitle" class="text-base font-bold text-slate-900 dark:text-white">Level 1 so'zlari</h2>
+            <button onclick="markLevelDone()" class="w-full sm:w-auto rounded-lg bg-slate-900 px-4 py-2 text-xs font-medium text-white hover:bg-slate-800 dark:bg-sky-500 dark:text-slate-900 dark:hover:bg-sky-600">Levelni yakunlash</button>
           </div>
-          <div id="wordsGrid" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3"></div>
+          <div id="wordsGrid" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3 w-full"></div>
         </section>
 
-        <section id="view-flash" class="hidden rounded-xl border border-slate-200 bg-white p-4 soft-shadow dark:bg-slate-800 dark:border-slate-700">
+        <!-- FLASHCARD -->
+        <section id="view-flash" class="hidden rounded-xl border border-slate-200 bg-white p-4 soft-shadow dark:bg-slate-800 dark:border-slate-700 w-full">
           <div class="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <h2 class="text-base font-bold text-slate-900 dark:text-white">Flashcard</h2>
             <select id="flashLevelSelect" class="w-full sm:w-auto rounded-lg border border-slate-200 px-2 bg-white dark:bg-slate-900 dark:border-slate-700 dark:text-white" onchange="setLevel(+this.value); currentCard=0; renderFlash()"></select>
@@ -157,8 +171,8 @@
                 <div class="flip-face absolute inset-0 flex flex-col justify-between rounded-xl p-5 bg-slate-900 dark:bg-slate-950 text-white border border-transparent dark:border-slate-700">
                   <div class="flex justify-between text-[10px] font-bold uppercase tracking-wider text-slate-400"><span id="flashCat">-</span><span id="flashIndex">-</span></div>
                   <div class="text-center">
-                    <h3 id="flashWord" class="break-words text-3xl font-bold tracking-tight px-2">Want</h3>
-                    <button class="mt-3 rounded-lg bg-white/10 px-4 py-1.5 text-xs hover:bg-white/15 transition-colors" onclick="event.stopPropagation(); speak(getCurrentFlash().w)">
+                    <h3 id="flashWord" class="break-words text-3xl font-bold px-2">Want</h3>
+                    <button class="mt-3 rounded-lg bg-white/10 px-4 py-1.5 text-xs hover:bg-white/15" onclick="event.stopPropagation(); speak(getCurrentFlash().w)">
                       <span class="icon align-[-2px] text-sm">volume_up</span> Ovozli
                     </button>
                   </div>
@@ -185,7 +199,8 @@
           </div>
         </section>
 
-        <section id="view-quiz" class="hidden rounded-xl border border-slate-200 bg-white p-4 soft-shadow dark:bg-slate-800 dark:border-slate-700">
+        <!-- TEST -->
+        <section id="view-quiz" class="hidden rounded-xl border border-slate-200 bg-white p-4 soft-shadow dark:bg-slate-800 dark:border-slate-700 w-full">
           <div class="mb-3 flex flex-col gap-2">
             <h2 class="text-base font-bold text-slate-900 dark:text-white">Bilimni tekshirish</h2>
             <div class="grid grid-cols-3 gap-1.5">
@@ -197,7 +212,7 @@
               </select>
             </div>
           </div>
-          <div class="mx-auto max-w-xl rounded-xl border border-slate-200 bg-slate-50 p-3.5 dark:bg-slate-900 dark:border-slate-700">
+          <div class="mx-auto max-w-xl rounded-xl border border-slate-200 bg-slate-50 p-3.5 dark:bg-slate-900 dark:border-slate-700 w-full">
             <div class="mb-2 h-1 overflow-hidden rounded-full bg-white dark:bg-slate-800"><div id="quizBar" class="h-full bg-slate-900 dark:bg-sky-400 transition-all" style="width:0%"></div></div>
             <div class="flex justify-between text-[11px] text-slate-400"><span id="quizStep">-</span><span id="quizScore">-</span></div>
             <div class="py-4 text-center">
@@ -207,7 +222,7 @@
                 <button class="rounded-lg border border-slate-200 bg-white p-2 text-slate-500 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 min-h-0" onclick="speak(currentQuestion?.w || '')"><span class="icon text-sm">volume_up</span></button>
               </div>
             </div>
-            <div id="answers" class="flex flex-col gap-2"></div>
+            <div id="answers" class="flex flex-col gap-2 w-full"></div>
             <div class="mt-4 flex justify-between gap-3">
               <button class="rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300" onclick="startQuiz()">Boshlash</button>
               <button id="nextQuizBtn" class="hidden rounded-lg bg-slate-900 px-5 py-2 text-xs font-medium text-white dark:bg-sky-500 dark:text-slate-900" onclick="nextQuestion()">Keyingi</button>
@@ -222,7 +237,6 @@
 
   <script>
     const DATA = window.VOCABULARY_DATA || [];
-    const levelSizes = [100,100,100,100,100,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30];
     const categoryNames = { core:"Asosiy", action:"Harakat", people:"Jamiyat", study:"IELTS/O'qish", world:"Kundalik", academic:"Akademik", adventure:"Sarguzasht", emotions:"Xarakter", actions:"Harakat", school:"Maktab", nature:"Tabiat" };
     let activeLevel = 1, mode = "list", currentCard = 0, flashOrder = [], quiz = [], quizIndex = 0, quizScore = 0, currentQuestion = null;
     const learned = new Set(JSON.parse(localStorage.getItem("ielts2000Learned") || "[]"));
@@ -231,7 +245,7 @@
     function levelWords(level = activeLevel){ return DATA.filter(x => x.level === level); }
     function save(){ localStorage.setItem("ielts2000Learned", JSON.stringify([...learned])); }
     function toast(text){ const el=byId("toast"); el.textContent=text; el.classList.remove("opacity-0"); el.classList.add("opacity-100"); setTimeout(()=>{el.classList.remove("opacity-100"); el.classList.add("opacity-0")},1600); }
-    function speak(text){ if(!text || !("speechSynthesis" in window)) return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang="en-US"; u.rate=.86; speechSynthesis.speak(u); }
+    function speak(text){ if(!text || !("speechSynthesis" in window)) return; window.speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang="en-US"; u.rate=.86; window.speechSynthesis.speak(u); }
     function shuffle(arr){ return [...arr].sort(() => Math.random() - .5); }
 
     function toggleTheme() {
@@ -249,12 +263,11 @@
 
     function init(){
       initTheme();
-      byId("levelGrid").innerHTML = Array.from({length:45},(_,i)=>`<button class="level-chip flex-shrink-0 flex items-center justify-center rounded-lg border border-slate-200 text-xs font-semibold bg-white text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 data-[active=true]:bg-slate-900 data-[active=true]:text-white dark:data-[active=true]:bg-sky-400 dark:data-[active=true]:text-slate-900 dark:data-[active=true]:border-sky-400" data-level="${i+1}" onclick="setLevel(${i+1})">${i+1}</button>`).join("");
+      byId("levelGrid").innerHTML = Array.from({length:45},(_,i)=>`<button class="level-chip flex-shrink-0 flex items-center justify-center rounded-lg border border-slate-200 text-xs font-semibold bg-white text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 data-[active=true]:bg-slate-900 data-[active=true]:text-white dark:data-[active=true]:bg-sky-400 dark:data-[active=true]:text-slate-900 dark:data-[active=true]:border-sky-400 w-11 h-11" data-level="${i+1}" onclick="setLevel(${i+1})">${i+1}</button>`).join("");
       const opts = Array.from({length:45},(_, i)=>`<option value="${i+1}">Lvl ${i+1}</option>`).join("");
       byId("flashLevelSelect").innerHTML = opts;
       byId("quizFrom").innerHTML = opts;
       byId("quizTo").innerHTML = opts;
-      byId("quizTo").value = 1;
       const cats = [...new Set(DATA.map(x => x.cat))].sort();
       byId("categoryFilter").innerHTML += cats.map(c=>`<option value="${c}">${categoryNames[c] || c}</option>`).join("");
       setLevel(1);
@@ -308,7 +321,7 @@
       const cat = byId("categoryFilter").value;
       let words = levelWords().filter(w => (cat==="all" || w.cat===cat) && (!q || `${w.w} ${w.uz}`.toLowerCase().includes(q)));
       byId("wordsGrid").innerHTML = words.map(w => `
-        <article class="word-card rounded-xl p-3.5 border bg-white border-slate-200 dark:bg-slate-800 dark:border-slate-700 ${learned.has(w.id) ? "opacity-60 dark:opacity-40 bg-slate-50 dark:bg-slate-900/50" : ""}">
+        <article class="word-card rounded-xl p-3.5 border bg-white border-slate-200 dark:bg-slate-800 dark:border-slate-700 ${learned.has(w.id) ? "opacity-60 bg-slate-50 dark:bg-slate-900/50" : ""}">
           <div class="mb-1.5 flex items-start justify-between gap-3">
             <div><p class="text-[9px] font-bold uppercase text-slate-400">#${w.rank} - ${categoryNames[w.cat] || w.cat}</p><h3 class="text-base font-bold text-slate-900 dark:text-white">${w.w}</h3></div>
             <button class="text-slate-300 hover:text-slate-900 dark:text-slate-600 dark:hover:text-sky-400 min-h-0" onclick="toggleLearned(${w.id})"><span class="icon text-xl">${learned.has(w.id) ? "check_circle" : "radio_button_unchecked"}</span></button>
